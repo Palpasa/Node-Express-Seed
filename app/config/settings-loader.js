@@ -10,7 +10,6 @@ const DIRNAME = __dirname,
     KEYVALUE_SEPERATOR_REGEX = /(.*)=(.*)/,
     VALUE_PLACEHOLDERS_FINDER_REGEX = /{.*?}/g;
 
-
 let
     getSettingsFileContent = () => fs.readFileSync(SETTINGS_FILE_PATH, 'utf8'),
     parseSettingFileIntoKeyValuePair = (settingsFileData) => {
@@ -20,14 +19,16 @@ let
 
         //parse all keyvalue pair
         keyValStringsArray.forEach((keyValString) => {
-            let matcher = keyValString.match(KEYVALUE_SEPERATOR_REGEX),
-                key = matcher[1].trim(), value = matcher[2].trim().replace(/'|;/g, '');
+            let matcher = keyValString.match(KEYVALUE_SEPERATOR_REGEX);
 
-            keyValPair[key] = value;
+            if (matcher) {
+                let key = matcher[1].trim(), value = matcher[2].trim().replace(/'|;/g, '');
+                keyValPair[key] = value;
 
-            //test if value has placeholder
-            if (VALUE_PLACEHOLDERS_FINDER_REGEX.test(value)) {
-                keyWhoseValueUsesPlaceHolder.push(key); //we will get back to you
+                //test if value has placeholder
+                if (VALUE_PLACEHOLDERS_FINDER_REGEX.test(value)) {
+                    keyWhoseValueUsesPlaceHolder.push(key); //we will get back to you
+                }
             }
         });
 
