@@ -1,0 +1,6 @@
+appname = seed;
+api_version = api1;
+local_port = 3500;
+log_file_path = /var/log/{appname}/;
+log_file_name = applog;
+local_log_level = silly;
