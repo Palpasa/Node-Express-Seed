@@ -7,9 +7,12 @@ import config from 'winston/lib/winston/config';
 let logger,
     logLevelConfig = `${process.env.NODE_ENV}_log_level` || 'log_level',
     logLevel = process.env[logLevelConfig] || 'warn',
-    logFilePath = process.env.log_file_path.endsWith('/') ? process.env.log_file_path : `${process.env.log_file_path}/`,
-    logFileName = process.env.log_file_name || 'filelog-warn.log',
-    winstonlogTimeStampFormat = () => moment().format('YYYY/MM/DD h:mm:ss a'),
+    logFilePath = `${process.env.NODE_ENV}_log_file_path` || process.env.log_file_path,
+    logFileName = process.env.log_file_name || `${process.env.appname}-log.log`;
+
+logFilePath = logFilePath.endsWith('/') ? logFilePath : `${logFilePath}/`;
+
+let winstonlogTimeStampFormat = () => moment().format('YYYY/MM/DD h:mm:ss a'),
     winstonlogMessageBuilder = (options) => {
         let logContent = {
             level: options.level,
