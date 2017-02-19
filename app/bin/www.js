@@ -77,7 +77,7 @@ let onListening = () => {
  */
 
 let envBasedPortProperty = `${process.env.NODE_ENV}_port`,
-  port = normalizePort(process.env.port || process.env[envBasedPortProperty] || '3000'),
+  port = normalizePort(process.env[envBasedPortProperty] || process.env.port || '3000'),
   server = http.createServer(app);
 
 app.set('port', port);
