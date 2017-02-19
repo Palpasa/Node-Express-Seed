@@ -1,6 +1,6 @@
 # This project is the seed for building API using [Node.js](https://nodejs.org/en/) and [Express](http://expressjs.com/).
 
-# Feature highlights
+# Features
   1. Custom settings file so that everything does not need to be passed from command line
   2. Easy API versioning
   3. Simple logging configuration
@@ -14,19 +14,20 @@
     3. Run `npm start`
 
 Go the the following endpoints:
+
  - http://localhost:3500/api1/general => returns message hello
  - http://localhost:3500/api1/apidoc => JSON formatted api documentation
 
-## Using this Project
+# Using this Project
 
-### Define settings
+## Define settings
 
    Normally settings are passed to node using command line variables. However, with this scheme the command 
    line argument starts to get really long. Using command line is more hassle in windows becuase every command
    needs to be prefixed with SET. For windows and unix some of us might even have seperate values defined in scripts.
    Using this seed project you can really avoid long command line input.
 
-__How does it work?__
+__How does settings work?__
 
 When the app starts, settings-loader.js reads the app.settings file and pareses all the key value pair. Any line 
 that matches the regex `.*=.*`  are __Key/Value pair__. Any other line are ignored. Therefore, new lines added to seperate
@@ -74,7 +75,7 @@ flag. The generic fallback key for environment prefixed key is just key from the
 
 * When app is running locally, NODE_ENV is set to local, all loggings will be done locally. When running tests, NODE_ENV = test, no logs will be written at all.
 
-# API Documentation <a id="apidoc></a>
+# API Documentation <a id="apidoc"> </a>
 By default, it is expected that you will write an API documentation. 
 
 # route builder
