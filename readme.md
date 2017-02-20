@@ -72,7 +72,7 @@ api_version                             | String     | No       | api1          
 port                                    | Number     | No       | 3000              | Yes                                   | The port in which app will listen to
 log_file_path                           | String     | Yes      | /var/log/seed/    | Yes                                   | The directory where logs file will be written. You should ensure such directory exists and the process have permission to write in this directory
 log_file_name                           | String     | No       | {appname}-log.log | No                                    | Log file will be added in log_file_path directory. Also, for default log file name appname will be replaced using value defined in app.settings
-level                                   | String     | No       | warn              | Yes                                   | Winston is used for logging. Please refer to winston API for more info. Also, checkout the file [app/config/logger.js](./app/config/logger.js) for applicable logging methods
+level                                   | String     | No       | warn              | Yes                                   | Winston is used for logging. Please refer to winston API for more info. Also, checkout the file [app/config/logger.js](./app/config/logger.js) for applicable logging methods. If running tests, `NODE_ENV = local`, logging will not be done at all 
 append_controller_filename_to_all_route | true/false | No       | false             | No                                    | In order for this flag to make sense please reference [API documentation](#apidoc)
 
 <a id="envprefix"> **What is environment prefix?** </a>
@@ -80,14 +80,15 @@ append_controller_filename_to_all_route | true/false | No       | false         
 When you are running your app, you might want to use different value based on the environment (e.g. local, development, qa, production or any 
 value defined in `NODE_ENV` flag). For example for local development you might want to use port 3000 but for production you might
 want to use something else. So, for port you can define the vaue prefixed by your environment as local_port. When the app starts, it looks
-for this environment prefixed value, if found then it will use it else it will fallback to using just port. This means for some environment
-you can define custom value and for some you can just fallback to the generic one. For instance in local envrionment you can choose to 
-use value defined by `local_port` and for all other environment you can use valu defined by `port`.
+for this environment prefixed value and if found then it will use it else it will fallback to the key port. 
 
-Any key that can use environment prefix must have the format `{NODE_ENV}_key`. NODE_ENV will be replaced with the value passed to __NODE_ENV__
+This means for some keys you you can define different sets of values by prefixing your key with environemnt and yet still use generic keys as 
+global value. For example, in case of port you can define `local_port` to define the port that should be use for local development; additionally,
+you can define `port` which will be a fallback value for all other environment.
+
+Any key that can use environment prefix must use the format `{NODE_ENV}_key`. NODE_ENV will be replaced using the value passed to __NODE_ENV__
 flag. The generic fallback key for environment prefixed key is just key from the above defined format.
 
-* When app is running locally, NODE_ENV is set to local, all loggings will be done locally. When running tests, NODE_ENV = test, no logs will be written at all.
 
 # <a id="apidoc"> API Documentation </a>
 In the earlier [app in action](#app-in-action) one of the end point returned JSON formatted API documents. This works 
