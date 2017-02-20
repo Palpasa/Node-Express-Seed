@@ -132,6 +132,7 @@ The most important values from this API format when doing route registration are
 and method. Let's go through the various steps that we go thorugh in order to register route and callback function(s) with express.
 
 __STEP 1: Building Endpoints (routes)__
+
 When building route, following values are considered in the order defined below:
 
 - if api_version is defined, it is added at the very beginning of the endpoint
@@ -163,18 +164,25 @@ For the docs object, route is set to apidoc and the flag `appendFileNameToRouteP
 Next step is to find function or functions to execute.
 
 __STEP 2: Find Function(s) to execute__
-This is where the protected flag comes in use. Let's assume you ar building a banking application. Clearly if user wants to see his account details then he must login first. We need to ensure that the endpoint 
-which retrieves user's account balance always is secured (aka __protected__). One way to protect this endpoint is to validate the authtoken passed by the client when 
-calling your restful API. Assume there are multiple endpoints that all does the validation of the authtoken before serving the request. Now, this function of validation
-of authtoken can be refactored into a common code. In this seed app we have referred to this common function as `enableRouteProtection` and is defined in the index.js.
-If you have marked protected flag as true, the `function enableRouteProtection` is registered as the first function with the express API. When a request is received for
-this protected endpoint, express will execute this function first. If you throw an error in this function Express will return error; If you call `next` at the end of the
-execution of this function express will call the next function registered. 
 
-Next value we look at is method in the API Documentation. The method can be a function or an array of function. We will take this function and provide it to the Express during 
-the route registration. So, express will call all the function in the order as it was defined. 
+This is where the protected flag comes in use. Let's assume you are building a banking application. If user wants to see 
+his account details then he must login first. So you might think of login endpoint as unsecure and the endppoint 
+to retrieve user's account balance as secured (aka __protected__). One way to protect the protected endpoint is to validate 
+some user data. For example, suppose that after user logs in your application sends the client Auth token
+which the client needs to include in the API calls that are protected. Assuming there are multiple endpoints that are protected, 
+all of them must validate the authtoken before returning the account balance to client. Now, this function that does auth
+token validation is common logic for all protected endpoints and it needs to be refactored into a common code. In this seed app, 
+we have referred to this common function as `enableRouteProtection` and is defined in the [index.js](./app/router/index.js).
+If you have marked protected flag as true in your API documentation, then the `function enableRouteProtection` is registered as 
+first function with the express API. When a request is received for this protected endpoint, express will execute 
+`enableRouteProtection function` first. If you throw an error in this function Express will return error; If you call `next` 
+at the end of the execution of this function, express will call the next function registered in the chain.
 
-So, the pseudo code for generating function now looks as follows:
+Next value we look at is method in the API Documentation format. The method value can be a function or an array of function. 
+We will take this value and provide it to the Express during the route registration. All the function provided will be executed in  
+the order as it was defined.
+
+Let's summarize the above discussion into pseudo code:
 
 ``` 
     let functionToExecute;
@@ -184,10 +192,20 @@ So, the pseudo code for generating function now looks as follows:
  else   
     functionToExecute = method;
 ```
+where method is defined in the [API Documentation Format](#apidocformat).
 
-__Note:__
+__Tips:__
 
-1. Want to see code in action, refer to the method [registerRoute](./app/router/index.js). Look at the if and else section for the variables `enableRouteProtection` and `fnToExecute`.
+1. Want to see code in action, refer to the method [registerRoute](./app/router/index.js). Look at the `if and else section` 
+for the variables `enableRouteProtection` and `fnToExecute`. Here, is the copied code snippet:
+
+```
+    if (/true/i.test(aRequestAPIDocAndCallbackFn.protected)) {
+        app[httpVerb](newRoute, enableRouteProtection, fnToExecute);
+    } else {
+        app[httpVerb](newRoute, fnToExecute);
+    }
+```
 
 
 __STEP 3: Find the HTTP Verb to use__
@@ -199,13 +217,22 @@ If you look at the [general.js](./app/controller/general.js) file, in the very e
     ```
 
 This exported variable __must__ be one of the HTTP Verb (get, post, put, patch, delete) in lower case.
-We look at this exported variable and find out the HTTP Method that should be used to register the route using Express.
+We look at this exported variable and find out the HTTP Method that should be used to register the endpoint using Express.
 
-__Note:__
+__Tips:__
 
-1. Want to see code in action, refer to the method [registerRoute](./app/router/index.js). Look at the if and else section for the variables `httpVerb`.
+1. Want to see code in action, refer to the method [registerRoute](./app/router/index.js). Look at the `if and else section`
+ for the variables `httpVerb`. Here, is the copied code snippet:
 
-Finally we have route and the function to execute registered for different HTTP Methods. Hopefully, everything makes sense.
+```
+    if (/true/i.test(aRequestAPIDocAndCallbackFn.protected)) {
+        app[httpVerb](newRoute, enableRouteProtection, fnToExecute);
+    } else {
+        app[httpVerb](newRoute, fnToExecute);
+    }
+```
+
+Finally, now we have endpoint and the function to execute registered for different HTTP Methods. Hopefully, by now everything makes sense.
 
 #Testing
 
