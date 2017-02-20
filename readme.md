@@ -182,7 +182,7 @@ __Note:__
 
 1. Want to see code in action, refer to the method [registerRoute](./app/router/index.js). Look at the if and else section for the variables `httpVerb`.
 
-Finally we have route and the function to execute registered for different HTTP Methods.
+Finally we have route and the function to execute registered for different HTTP Methods. Hopefully, everything makes sense.
 
 #Testing
 
