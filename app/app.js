@@ -9,7 +9,7 @@ import morgan from 'morgan';
 import path from 'path';
 
 import appRouter from './router';
-import errorHandler from './config/errorhandler';
+import errorHandler from './config/error-handler';
 import db from './config/db'
 
 let app = express();
@@ -26,7 +26,6 @@ app.use(cookieParser());
 
 //TODO fix CORS header
 app.use(function(req, res, next) {
-
     if (req.method === 'OPTIONS') {
         var headers = {};
         headers["Access-Control-Allow-Origin"] = "*";
@@ -38,7 +37,6 @@ app.use(function(req, res, next) {
         res.end();
 
     }else {
-
         res.header("Access-Control-Allow-Origin", "*");
         res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
         next();
