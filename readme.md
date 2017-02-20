@@ -24,49 +24,59 @@ Go the the following endpoints:
 
 # Using this Project
 
-## Define settings
+## [app.settings](./app/config/app.settings)
 
    Normally settings are passed to node using command line variables. However, with this scheme the command 
    line argument starts to get really long. Using command line is more hassle in windows becuase every command
-   needs to be prefixed with SET. For windows and unix some of us might even have seperate values defined in scripts.
-   Using this seed project you can really avoid long command line input.
+   needs to be prefixed with SET. Using this seed project you can really avoid long command line input.
 
 __How does settings work?__
 
-When the app starts, settings-loader.js reads the app.settings file and pareses all the key value pair. Any line 
-that matches the regex `.*=.*`  are __Key/Value pair__. Any other line are ignored. Therefore, new lines added to seperate
-contents of settings file are ignored. If you want to add any __comments__, just do not use = any where in that line. I 
-prefer to use javascript one liner comment syntax. After parsing the app.settings, file all the key value pair are add in 
-the `process.env` as `process.env.key = value`. Therefore, any value defined in app settings are accessible globally through 
-out the code.
+When the app starts, [settings-loader.js](./app/config/settings-loader.js) reads the [app.settings](./app/config/app.settings)
+file and pareses all the lines. Each line must be terminated with `;`. Any line that is terminated with `;` and 
+matches the regex `.*=.*`  are __Key/Value pair__; everything else is ignored. Therefore, any new lines added to this 
+[app.settings](./app/config/app.settings) file to make it more readable are ignored. Adding __comments__ is easier too; 
+just don't use = any where in your comment. Personally, I prefer to use javascript one liner comment syntax. 
+After parsing the [app.settings](./app/config/app.settings), file all the key value pair are add in the 
+[__process.env__](https://nodejs.org/api/process.html#process_process_env) as `process.env.key = value`. Any value defined 
+ßin app settings are accessible globally through out the code from `process.env`.
 
-One of the interesting thing about app.settings is you can __define placeholder for value (only value can have placeholder)__ 
-and it will be replaced with an actual value when app.settings parses the value. An example of such usage in this seed project is 
-defination of `log_file_path`. The value defined in app.settings is `log_file_path = /var/log/{appname}/;`. The __placeholder__ 
-is text between `{}`. A key lookup is done using the text defined in the curly braces and if a value is found, the placeholder is replaced.
-This final value will be the key/value pair that will be added to proces.env. However, if no value is found for the placeholder than an error
-is thrown which will tell which placeholder is missing the defination. 
+One of the interesting feature about values defined in app.settings is that you can __use placeholder for value__. __Placeholder__
+is a text occurring with patter `{.*}` and can be used only for value in a key/value pair. 
+An example of such usage in this seed project is  defination of `log_file_path`. Here is snippet of log_file_path definition 
+form [app.settings](./app/config/app.settings):
 
-Note that placeholder key can appear even before the actual key is defined. This is because placeholder are looked up and replaced in the 
-very end of parsing phase.
+```
+log_file_path = /var/log/{appname}/;
+```
+
+The placeholder will be replaced with an actual value. 
+
+In this usage `{appname}` is the placeholder and it will be replaced with an actual value of appname. In order to replace placeholder
+with an actual value, a lookup is done using the placeholder text. In this case value for the key appname is looked up and if a 
+value is found, the placeholder text will be replaced. However, if it is not found than an error will be thrown. You will most likely
+catch this error during local development, NODE_ENV = local, and not have to deal with errors in any other environment. This lookup
+of the placeholder is done at the very end of parsing. Hence, placeholder values can appear even before the actual key/value pair is 
+defined. In this case `log_file_path` can defined  before `appname` and still the placeholder will be correctly replaced with actual value.
+
+<a id="appsettingsvalues"> __Defining values__ </a>
+
+All the settings values should be defined in [app/config/app.settings](./app/config/app.settings). 
+Listed below are the kye/value pair known to the app. You can define any values you want and read them from process.env.
 
 
-__Defining values__ <a id="appsettingsvalues"> </a>
+key                                     | value      | Required | Default           |  [Use environment prefix](#envprefix) | Description
+---                                     |  ---       | ---      | ---               | ---                                   | ---
+appname                                 | String     | No       | seed              | No                                    | The name of your app. We strongly recommended to set this value in app.settings
+api_version                             | String     | No       | api1              | No                                    | If defined it will be used to prefix all the routes in your app. This flag makes changing API version as trivial as updating value for this key in app.settings file
+port                                    | Number     | No       | 3000              | Yes                                   | The port in which app will listen to
+log_file_path                           | String     | Yes      | /var/log/seed/    | Yes                                   | The directory where logs file will be written. You should ensure such directory exists and the process have permission to write in this directory
+log_file_name                           | String     | No       | {appname}-log.log | No                                    | Log file will be added in log_file_path directory. Also, for default log file name appname will be replaced using value defined in app.settings
+level                                   | String     | No       | warn              | Yes                                   | Winston is used for logging. Please refer to winston API for more info. Also, checkout the file [app/config/logger.js](./app/config/logger.js) for applicable logging methods
+append_controller_filename_to_all_route | true/false | No       | false             | No                                    | In order for this flag to make sense please reference [API documentation](#apidoc)
 
-Values are defined in [app/config/app.settings](./app/config/app.settings). Listed below are the kye/value pair known to the app.
+<a id="envprefix"> **What is environment prefix?** </a>
 
-
-key | value | Required | Default | Description | Can use environment prefix |
---- |  ---  | --- | --- | --- | --- |
-appname | String | No | seed | The name of your app. We strongly recommended to set this value in app.settings | No |
-api_version | String | No | api1 | If defined it will be used to prefix all the routes in your app. This flag makes changing API version as trivial as updating value for this key in app.settings file. | No |
-port | Number | No  | 3000 | the port in which app will listen to | Yes |
-log_file_path | String | Yes | /var/log/seed/ | The directory where logs file will be written. You should ensure such directory exists and the process have permission to write in this directory. | Yes | 
-log_file_name | String | No | {appname}-log.log | Log file will be added in log_file_path directory. Also, for default log file name appname will be replaced using value defined in app.settings. | No |
-level | String | No | warn | Winston is used as logging framework. Please refer to winston API for more info. Also, checkout the file [app/config/logger.js](./app/config/logger.js) for logging methods that you can be used. | Yes |
-append_controller_filename_to_all_route | true/false | No | false | In order for this flag to make sense please reference [API documentation](#apidoc). | No |
-
-* What is environment prefix:
 When you are running your app, you might want to use different value based on the environment (e.g. local, development, qa, production or any 
 value defined in `NODE_ENV` flag). For example for local development you might want to use port 3000 but for production you might
 want to use something else. So, for port you can define the vaue prefixed by your environment as local_port. When the app starts, it looks
