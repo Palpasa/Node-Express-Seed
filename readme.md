@@ -1,3 +1,5 @@
+# Work in progress... not ready for use yet
+
 # Overview
 This project is the seed for building API using [Node.js](https://nodejs.org/en/) and [Express](http://expressjs.com/).
 The main goal of this project is to write modular controller and automated app documentation.
