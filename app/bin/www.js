@@ -69,14 +69,15 @@ let onListening = () => {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  logger.silly(`App started on port ${bind}`);
+  logger.warn(`App started on port ${bind}; Environment is ${appEnv}`);
 }
 
 /**
  * Get port from environment and store in Express.
  */
 
-let envBasedPortProperty = `${process.env.NODE_ENV}_port`,
+let appEnv = process.env.NODE_ENV,
+  envBasedPortProperty = `${appEnv}_port`,
   port = normalizePort(process.env[envBasedPortProperty] || process.env.port || '3000'),
   server = http.createServer(app);
 
