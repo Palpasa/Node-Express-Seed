@@ -47,7 +47,7 @@ Note that placeholder key can appear even before the actual key is defined. This
 very end of parsing phase.
 
 
-<b>Defining values</b>
+__Defining values__
 
 Values are defined in [app/config/app.settings](./app/config/app.settings). Listed below are the kye/value pair known to the app.
 
