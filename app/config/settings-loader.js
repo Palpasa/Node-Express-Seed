@@ -49,7 +49,7 @@ let
                 let placeHolderWithStrippedBraces = placeHolder.replace(/{|}/g, ''),
                     placeHolderReplacementValue = keyValPair[placeHolderWithStrippedBraces];
 
-                if (placeHolderReplacementValue)
+                if (placeHolderReplacementValue !== undefined)
                     keyValPair[key] = value.replace(placeHolder, placeHolderReplacementValue);
                 else
                     throw new Error(`Value not defined for placeholder ${placeHolder} in ${SETTINGS_FILE_NAME}`)
