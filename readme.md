@@ -115,12 +115,12 @@ in each object defined are protected, route, appendFileNameToRoutePrefix and met
 __STEP 1: Building Routes__
 When building route, following are the things considered and added in the order defined below:
 
-    - if api version is defined it is added at the very beginning of the route
-    - do we want to add the controller file name or not? Read the value of appendFileNameToRoutePrefix. If it is falsy (either undefined or set to false) then
-    the global settings append_controller_filename_to_all_route is read. (We talked about this flag in [Define Settings section](#appsettingsvalues)). If 
-    it is also falsy (either undefined or set to false) then the controller name is not appended; Else we will append the controller name after the api version in the route
-    - finally we consider the route value defined in the API Documentation. If it is defined we will add this to the route. Therefore, all the route parameters that you want
-    needs to be defined in the route when you create API documentation. Finally, you should leverage this route in order to make your API endpoint restful.
+- if api version is defined it is added at the very beginning of the route
+- do we want to add the controller file name or not? Read the value of appendFileNameToRoutePrefix. If it is falsy (either undefined or set to false) then
+the global settings append_controller_filename_to_all_route is read. (We talked about this flag in [Define Settings section](#appsettingsvalues)). If 
+it is also falsy (either undefined or set to false) then the controller name is not appended; Else we will append the controller name after the api version in the route
+- finally we consider the route value defined in the API Documentation. If it is defined we will add this to the route. Therefore, all the route parameters that you want
+needs to be defined in the route when you create API documentation. Finally, you should leverage this route in order to make your API endpoint restful.
 
 So, in the end pseudo code for building the route string can be summarized as:
   
