@@ -92,62 +92,72 @@ flag. The generic fallback key for environment prefixed key is just key from the
 
 # <a id="apidoc"> API Documentation </a>
 In the earlier [app in action](#app-in-action) one of the end point returned JSON formatted API documents. This works 
-because API documents are expected to be defined in every files that are in controller directory. Open any one of the files
-in controller directory to see API documentation process. Let's open [general.js](./app/controller/general.js) file and
-look at the hello Object. Earlier when you went to the endpoint http://localhost:3500/api1/general, the method in this 
-hello object responded. Let's how everything ties up together.
+because API documents are expected to be defined in every files in [controller directory](./app/controller/). Open any 
+one of the files in controller directory to see API documentation example. Let's open 
+[general.js](./app/controller/general.js) file and look at the hello Object. Earlier when you went to the endpoint 
+http://localhost:3500/api1/general, the method in this hello object responded. Let's how everything ties up together.
 
+<a id="apidocformat">**__Documentation Format__**</a> 
 
-Object-Key |  Value | Description |
---- | --- | --- |
-api | Object | The value is free form and really does not have to be even an object. Ideally this should describe what this particular endpoint does, what are the params this endpoint is expecting and the response from this endpoint. In the hello example, I have added desc, params and response to describe this particular API.|
-protected | true/false | protected means before the call to the method defined in the object some common code will be executed. This common code is defined in [function enableRouteProtection](./app/router/index.js). Ideally you should update this function as defined in there. |
-route | String | This will be a suffix to your API Endpoint (more about it coming right below). You do not have to worry about appending / in this route. It will be appened if not provided. Therefore, a simple string value should be your choice here. Any [route parameters](https://expressjs.com/en/guide/routing.html) should be defined as ':paramName' described in Express JS.|
-appendFileNameToRoutePrefix | true/false | If it is not defined it means false. More about this value is coming up just in a bit; keep reading this whole API Documentation section. |
-method | A function or an array of function | This is the method that will be executed. The function will have request and response params only. This is passed to express during route registration. If this is an array of function, all the function will be called in the order provided. First function should call next at the end of execution for the second one to be called and so on. Refer to [express routing guide](https://expressjs.com/en/guide/routing.html)|
+Key |  Value | Description
+--- | --- | ---
+api | Object | The value is free form and really does not have to be even an object. Ideally this should describe what this particular endpoint does, what are the params this endpoint is expecting and the response from this endpoint. In the hello example, I have added desc, params and response to describe this particular API.
+protected | true/false | protected means before the call to the method defined in the object some common code will be executed. This common code is defined in [function enableRouteProtection](./app/router/index.js). Ideally you should update this function as defined in there.
+route | String | This will be a suffix to your API Endpoint (more about it coming right below). You do not have to worry about appending / in this route. It will be appened if not provided. Therefore, a simple string value should be your choice here. Any [route parameters](https://expressjs.com/en/guide/routing.html) should be defined as ':paramName' described in Express JS.
+appendFileNameToRoutePrefix | true/false | If it is not defined it means false. More about this value is coming up just in a bit; keep reading this whole API Documentation section
+method | A function or an array of function | This is the method that will be executed. The function will have request and response params only. This is passed to express during route registration. If this is an array of function, all the function will be called in the order provided. First function should call next at the end of execution for the second one to be called and so on. Refer to [express routing guide](https://expressjs.com/en/guide/routing.html)
 
-For everything in the API documentation to make sense now we need to take about routing and how the endpoints are built. For 
-all the time we said keep reading routing (next section) is where everything ties up.
+For every parameter in the [documentation format](#apidocformat) to make sense we need to take about [routing](#routing) and how the endpoints are built. After that everything will make sense.
 
-# Routing
-Before talking about this app routing, let's talk about what we want to build. When we use [Express js routing](http://expressjs.com/en/guide/routing.html) is done as follows:
+# <a id="routing"> Routing </a>
+Before talking about this app routing, let's talk about how we register route and callback function. We are using [Express js](http://expressjs.com/) as
+framework and we will leverage [Express js routing](http://expressjs.com/en/guide/routing.html) feature. In Express, route and callback function is
+defined as follows:
 
-    ```
-        app.get('/', function (req, res) {
-            res.send('hello world')
-        })
-    ```
-Our eventual goal is to build a route string and find function or array of functions to execute for that route. Then finally we figure out which HTTP method should be used to register 
-this route and the function. Not that becuase we are using Express framework, any API express supports are also supported by this seed project because our route registation is done
-using express. Now let's talk about how we do it.
+```
+app.get('/', function (req, res) {
+    res.send('hello world')
+})
+```
 
-When the app starts, index.js file in the [router directory](./app/router/index.js) is loaded. This file reads the controller directory and parses every
-file in this directory. For each file in this controller direcotry, index.js parses the API Documentation. The most important values from the API Documentation 
-in each object defined are protected, route, appendFileNameToRoutePrefix and method. 
+Our goal during the routing phase is to build the endpoint, register the function or an array of function to 
+execute for that endpoint and finally figure out which HTTP method should be used for registration. Since we pass everything
+to Express framework for registation, any API that express supports are definitely supported by this seed project. Now let's
+talk about how we do it.
 
-__STEP 1: Building Routes__
-When building route, following are the things considered and added in the order defined below:
+In the [router directory](./app/router) there is index.js file which is loaded when the app starts. This file reads the 
+controller directory and parses all the files (only the javascript files should be in controller directory). For each file 
+index.js parses, all the values from the [API Documentation format](#apidocformat) are expected to be defined. 
+The most important values from this API format when doing route registration are protected, route, appendFileNameToRoutePrefix 
+and method. Let's go through the various steps that we go thorugh in order to register route and callback function(s) with express.
 
-- if api version is defined it is added at the very beginning of the route
-- do we want to add the controller file name or not? Read the value of appendFileNameToRoutePrefix. If it is falsy (either undefined or set to false) then
-the global settings append_controller_filename_to_all_route is read. (We talked about this flag in [Define Settings section](#appsettingsvalues)). If 
-it is also falsy (either undefined or set to false) then the controller name is not appended; Else we will append the controller name after the api version in the route
-- finally we consider the route value defined in the API Documentation. If it is defined we will add this to the route. Therefore, all the route parameters that you want
-needs to be defined in the route when you create API documentation. Finally, you should leverage this route in order to make your API endpoint restful.
+__STEP 1: Building Endpoints (routes)__
+When building route, following values are considered in the order defined below:
 
-So, in the end pseudo code for building the route string can be summarized as:
+- if api_version is defined, it is added at the very beginning of the endpoint
+- do we want to add the controller file name or not? From the API documentation format we read the value of 
+[appendFileNameToRoutePrefix](#apidocformat). If it is falsy (either undefined or set to false) than the global settings 
+[append_controller_filename_to_all_route is read](#appsettingsvalues). If it is also falsy (either undefined or set to false),
+ than the controller name is not appended; else we will append the controller name after the api version in the endpoint
+- finally we consider the [route](#apidocformat) value defined in the API Documentation. If it is defined, we will append
+ this to the endpoint. If you want to add any route parameters to your endpoint you can do so in the route when creating API
+ documentation. Finally, you should leverage this route in order to make your API endpoint's restful.
+
+We can summarize above steps in the following pseudo code:
   
-  ```
-    let actualRoute = api_version + controller_filename + route; // use only variables that has value
-  ```
+```
+let newRoute = api_version + controller_filename + route; // use only variables that has value
+```
 
-__Note:__ 
+__Tips:__ 
 
-1. If you need to debug what route got built, then in the index.js file, add console.log statement to print the newRoute variable defined in the `function registerRoute`.
-2. In the [Feature section](#features) we showed you two end points defined in the controller file [general.js](./app/controller/general.js). One of the endpoint has the 
-file name 'general' as part of endpoint while other does not. This is because hello object has the flags appendFileNameToRoutePrefix set to true. For the docs object,
-route is set to apidoc; appendFileNameToRoutePrefix is not defined and global flag append_controller_filename_to_all_route is also falsy. Therefore, apidoc appears as part
-of endpoint but not the controller filename.
+1. If you need to debug what endoints got built, then in the [index.js](./app/router/index.js) file, add console.log statement to 
+print the newRoute variable defined in the `function registerRoute`.
+2. In the [Feature section](#features) we showed you two end points generated for the controller [general.js](./app/controller/general.js). 
+hello endpoint has the file name 'general' as part of endpoint while docs does not. Based on our above discussion of endpoints, 
+hello object has the flag `appendFileNameToRoutePrefix` set to true and therefore controller filename gets appended in the endpoint. 
+For the docs object, route is set to apidoc and the flag `appendFileNameToRoutePrefix` is not defined; Also, the global flag 
+`append_controller_filename_to_all_route` is falsy. Therefore, only apidoc appears as part of the endpoint but not the controller filename.
 3. If you want to see code in action refer to the method [getApiRoute](./app/router/index.js).
 
 Next step is to find function or functions to execute.
