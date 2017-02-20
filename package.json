@@ -9,8 +9,8 @@
     "clean": "rm -fr build",
     "build": "babel app --out-dir build --source-maps inline --copy-files && mv build/bin/www.js build/bin/www",
     "clean:build": "npm run clean && npm run build",
-    "clean:start": "npm run clean && npm run build && DEBUG=lair,api,error NODE_ENV=local nodemon --ignore apidoc/ ./build/bin/www",
-    "start": "DEBUG=lair,api,error NODE_ENV=local nodemon --exec babel-node --ignore apidoc/ -- ./app/bin/www.js"
+    "clean:start": "npm run clean && npm run build && NODE_ENV=local nodemon --ignore apidoc/ ./build/bin/www",
+    "start": "NODE_ENV=local nodemon --exec babel-node --ignore apidoc/ -- ./app/bin/www.js"
   },
   "babel": {
     "presets": [
