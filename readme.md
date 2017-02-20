@@ -8,7 +8,7 @@
   5. Automated API documentation builder
   6. Integration with babel
 
-# See the app in action
+# See the app in action <a id="app-in-action"></a>
     1. Clone this project
     2. Run `npm install`
     3. Run `npm start`
@@ -76,7 +76,27 @@ flag. The generic fallback key for environment prefixed key is just key from the
 * When app is running locally, NODE_ENV is set to local, all loggings will be done locally. When running tests, NODE_ENV = test, no logs will be written at all.
 
 # API Documentation <a id="apidoc"> </a>
-By default, it is expected that you will write an API documentation. 
+In the earlier [app in action](#app-in-action) one of the end point returned JSON formatted API documents. This works 
+because API documents are expected to be defined in every files that are in controller directory. Open any one of the files
+in controller directory to see API documentation process. Let's open [general.js](./app/controller/general.js) file and
+look at the hello Object. Earlier when you went to the endpoint http://localhost:3500/api1/general, the method in this 
+hello object responded. Let's how everything ties up together.
+
+
+Object-Key |  Value | Description |
+--- | --- | --- |
+api | Object | The value is free form and really does not have to be even an object. Ideally this should describe what this particular endpoint does, what are the params this endpoint is expecting and the response from this endpoint. In the hello example, I have added desc, params and response to describe this particular API.|
+protected | true/false | protected means before the call to the method defined in the object some common code will be executed. This common code is defined in [function enableRouteProtection](./app/router/index.js). Ideally you should update this function as defined in there. |
+route | String | This will be a suffix to your API Endpoint (more about it coming right below). You do not have to worry about appending / in this route. It will be appened if not provided. Therefore, a simple string value should be your choice here. Any [route parameters](https://expressjs.com/en/guide/routing.html) should be defined as ':paramName' described in Express JS.|
+appendFileNameToRoutePrefix | true/false | If it is not defined it means false. More about this value is coming up just in a bit; keep reading this whole API Documentation section. |
+method | A function or an array of function | This is the method that will be executed. The function will have request and response params only. This is passed to express during route registration. If this is an array of function, all the function will be called in the order provided. First function should call next at the end of execution for the second one to be called and so on. Refer to [express routing guide](https://expressjs.com/en/guide/routing.html)|
+
+For everything in the API documentation to make sense now we need to take about routing and how the endpoints are built. For 
+all the time we said keep reading this is the section where all ties up together.
+
+
+When app starts, 
+talk about routing now
 
 # route builder
 global flag [optional[: append_controller_filename_to_all_route (default is false)
@@ -85,7 +105,6 @@ local flag: appendFileNameToRoutePrefix
 
 ### API Documentation
 
-Describe api documnetation and talk about the global flag append_controller_filename_to_all_route
 
 ### app version
 
