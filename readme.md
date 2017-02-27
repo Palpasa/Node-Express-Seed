@@ -1,4 +1,11 @@
-# Work in progress... not ready for use yet
+# Before going further let's talk about TODO for this project:
+
+    1. Add better error handling logic. See the file [error-handler.js](./app/config/error-handler.js)
+    2. Enable hot reloading so that all code changes is transpiled and picked by node instead of you having to stop and start
+    3. Make the test work with transpiled code
+
+I don't think these TODO's are big items that is show stopper to use this seed. You can fix these and make it work for your purpose or 
+create PR with changes to complete above TODOs.
 
 # Overview
 This project is the seed for building API using [Node.js](https://nodejs.org/en/) and [Express](http://expressjs.com/).
