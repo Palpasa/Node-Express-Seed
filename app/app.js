@@ -47,8 +47,6 @@ app.use(function(req, res, next) {
 //router
 appRouter.init(app);
 
-console.log('----> Error handler exports: ', errorHandler);
-
 // error handler
 errorHandler.initErrorHandler(app);
 
