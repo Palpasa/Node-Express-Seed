@@ -3,7 +3,7 @@
 
 let helper = require('../helper'),
     request = require('supertest'),
-    app = require('../../app');
+    app = require('../../app/app');
 
 
 describe('General Endpoint test', () => {
