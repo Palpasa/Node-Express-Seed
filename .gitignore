@@ -1,7 +1,5 @@
 # https://www.gitignore.io/api/node
 
-build
-
 # Dependency directory
 node_modules
 
@@ -14,3 +12,5 @@ node_modules
 
 ###############GENERATED CODE IN THE PROJECT##############
 apiddoc/*.json
+build
+/npm-debug.log*
