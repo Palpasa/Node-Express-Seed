@@ -26,7 +26,7 @@ The main goal of this project is to write modular controller and automated app d
 
 __Running on Windows?__
 
-For every command there is an equivalent entry for windows prefixed by w. To run quickly in windows run the following commands:
+For every command there is an equivalent entry for windows prefixed by w. To run in windows run the following commands:
 
     1. Clone this project
     2. Run `npm install`
