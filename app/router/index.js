@@ -138,14 +138,10 @@ let writeAPIDocument = () => {
 
 let cleanUp = () => appInfo = {};
 
-let init = (app) => {
+export let init = (app) => {
     readCtrlDirForRouteInfoAndApiDoc()
     registerRoute(app, appInfo.openRoutes);
     registerRoute(app, appInfo.protectedRoute);
     writeAPIDocument();
     cleanUp();
-};
-
-module.exports = {
-    init: init
 };
