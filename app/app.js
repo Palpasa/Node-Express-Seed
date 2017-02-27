@@ -8,9 +8,9 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import path from 'path';
 
-import appRouter from './router';
-import errorHandler from './config/error-handler';
-import db from './config/db'
+import * as appRouter from './router';
+import * as errorHandler from './config/error-handler';
+import * as db from './config/db'
 
 let app = express();
 
@@ -46,6 +46,8 @@ app.use(function(req, res, next) {
 
 //router
 appRouter.init(app);
+
+console.log('----> Error handler exports: ', errorHandler);
 
 // error handler
 errorHandler.initErrorHandler(app);
