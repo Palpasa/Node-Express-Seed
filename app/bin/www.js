@@ -69,7 +69,7 @@ let onListening = () => {
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-  logger.warn(`App started on port ${bind}; Environment is ${appEnv}`);
+  logger.warn(`Environment is ${appEnv}; App started on port ${bind}`);
 }
 
 /**
