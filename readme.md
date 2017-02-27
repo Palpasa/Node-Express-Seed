@@ -17,6 +17,15 @@ The main goal of this project is to write modular controller and automated app d
     2. Run `npm install`
     3. Run `npm start`
 
+__Running on Windows?__
+
+For every command there is an equivalent entry for windows prefixed by w. To run quickly in windows run the following commands:
+
+    1. Clone this project
+    2. Run `npm install`
+    3. Run `npm run wstart`
+
+
 Go the the following endpoints:
 
  - http://localhost:3500/api1/general => returns message hello
