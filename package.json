@@ -13,10 +13,8 @@
     "wbuild": "npm run transpile && rename build\\bin\\www.js www",
     "clean:build": "npm run clean && npm run build",
     "wclean:build": "npm run wclean && npm run wbuild",
-    "clean:start": "npm run clean && npm run build && NODE_ENV=local nodemon --ignore apidoc/ ./build/bin/www",
-    "wclean:start": "npm run wclean && npm run wbuild && SET \"NODE_ENV=local\" && nodemon --ignore apidoc/ ./build/bin/www",
-    "start": "npm run clean:start && NODE_ENV=local nodemon --exec babel-node --ignore apidoc/ -- ./build/bin/www.js",
-    "wstart": "npm run wclean:start"
+    "start": "npm run clean && npm run build && NODE_ENV=local nodemon --ignore apidoc/ ./build/bin/www",
+    "wstart": "npm run wclean && npm run wbuild && SET \"NODE_ENV=local\" && nodemon --ignore apidoc/ ./build/bin/www"
   },
   "babel": {
     "presets": [
