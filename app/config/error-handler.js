@@ -8,7 +8,6 @@ let exp = {};
 
 // catch 404 and forward to error handler
 let handle404 = function (req, res, next) {
-    console.log('--> Handling 404 errors');
     let error = new Error('Item not found');
     error.status = 404;
     next(error);
