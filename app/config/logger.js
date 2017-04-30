@@ -5,9 +5,10 @@ import * as winston from 'winston';
 import config from 'winston/lib/winston/config';
 
 let logger,
-    logLevelConfig = `${process.env.NODE_ENV}_log_level` || 'log_level',
-    logLevel = process.env[logLevelConfig] || 'warn',
-    logFilePath = `${process.env.NODE_ENV}_log_file_path` || process.env.log_file_path,
+    envBasedLogLevel = `${process.env.NODE_ENV}_log_level`,
+    envBasedLogFilePath = `${process.env.NODE_ENV}_log_file_path`,
+    logLevel = process.env[envBasedLogLevel] || process.env.log_level || 'warn',
+    logFilePath = process.env[envBasedLogFilePath] || process.env.log_file_path,
     logFileName = process.env.log_file_name || `${process.env.appname}-log.log`;
 
 logFilePath = logFilePath.endsWith('/') ? logFilePath : `${logFilePath}/`;
